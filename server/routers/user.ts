@@ -1,16 +1,17 @@
 import express from 'express';
 import { getSingleUser, getUsers } from '../controllers/user';
+import { isAuth } from '../middleware/isAuth';
 
 const router = express.Router();
 
 // get all users
-router.get('/users', getUsers);
+router.get('/', isAuth, getUsers);
 
 // crate an user
 // router.post('/users/add', createUser);
 
 // get, delete & update user by id
-router.route('/users/:userId').get(getSingleUser);
+router.route('/:userId').get(isAuth, getSingleUser);
 // .put(updateSingleUser)
 // .delete(deleteSingleUser);
 

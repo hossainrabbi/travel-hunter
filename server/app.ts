@@ -1,3 +1,4 @@
+import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { Express } from 'express';
 import mongoose from 'mongoose';
@@ -22,10 +23,11 @@ mongoose
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 // application routes
-app.use('/api/v1', authRoute);
-app.use('/api/v1', userRoute);
+app.use('/api/v1/auth', authRoute);
+app.use('/api/v1/users', userRoute);
 
 // error handler
 app.use(notFound);
