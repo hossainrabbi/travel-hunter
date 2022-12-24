@@ -3,6 +3,7 @@ import express, { Express } from 'express';
 import mongoose from 'mongoose';
 import { errorHandler, notFound } from './middleware/common/errorHandler';
 import authRoute from './routers/auth';
+import userRoute from './routers/user';
 
 // dotenv configuration
 dotenv.config();
@@ -24,6 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // application routes
 app.use('/api/v1', authRoute);
+app.use('/api/v1', userRoute);
 
 // error handler
 app.use(notFound);

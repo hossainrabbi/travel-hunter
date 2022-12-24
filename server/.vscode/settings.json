@@ -1,0 +1,5 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true // true for remove useless imported file
+  }
+}

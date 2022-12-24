@@ -8,6 +8,7 @@ const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const errorHandler_1 = require("./middleware/common/errorHandler");
 const auth_1 = __importDefault(require("./routers/auth"));
+const user_1 = __importDefault(require("./routers/user"));
 // dotenv configuration
 dotenv_1.default.config();
 const port = process.env.PORT || 5000;
@@ -22,6 +23,7 @@ app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 // application routes
 app.use('/api/v1', auth_1.default);
+app.use('/api/v1', user_1.default);
 // error handler
 app.use(errorHandler_1.notFound);
 app.use(errorHandler_1.errorHandler);
