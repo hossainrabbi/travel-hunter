@@ -13,8 +13,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.login = exports.register = void 0;
-const successResponse_1 = require("../config/successResponse");
+const response_1 = require("../config/response");
 const User_1 = __importDefault(require("../models/User"));
+const http_errors_1 = __importDefault(require("http-errors"));
 // register auth
 function register(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -26,8 +27,10 @@ function register(req, res, next) {
                 newUser.role = 'admin';
             }
             newUser = yield newUser.save();
-            // forward data in ./config/successResponse.ts
-            (0, successResponse_1.successResponse)(res, 201, newUser);
+            // generate token from User models
+            const token = newUser.generateToken(newUser._id);
+            // forward data in ./config/response.ts for success response
+            (0, response_1.successResponse)(res, 201, { token });
         }
         catch (err) {
             next(err);
@@ -37,13 +40,32 @@ function register(req, res, next) {
 exports.register = register;
 // login auth
 function login(req, res, next) {
-    try {
-        res.json({
-            message: 'll',
-        });
-    }
-    catch (err) {
-        next(err);
-    }
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const { username, mobile, password } = req.body;
+            const user = yield User_1.default.findOne({
+                $or: [
+                    {
+                        username,
+                    },
+                    { mobile },
+                ],
+            });
+            if (!user) {
+                throw (0, http_errors_1.default)(404, 'invalid credentials');
+            }
+            const isMatch = yield user.comparePassword(password);
+            if (!isMatch) {
+                throw (0, http_errors_1.default)(404, 'invalid credentials');
+            }
+            // generate token from User models
+            const token = user.generateToken(user._id);
+            // forward data in ./config/response.ts for success response
+            (0, response_1.successResponse)(res, 200, { token });
+        }
+        catch (err) {
+            next(err);
+        }
+    });
 }
 exports.login = login;

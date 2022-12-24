@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.successResponse = void 0;
+exports.response = void 0;
 // success response message
-function successResponse(res, status, data) {
+function response(res, status, data) {
     res.status(status).json({
         status: {
             code: status,
             message: 'ok',
         },
-        data: data,
+        data,
     });
 }
-exports.successResponse = successResponse;
+exports.response = response;

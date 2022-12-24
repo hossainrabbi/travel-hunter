@@ -7,6 +7,17 @@ export function successResponse(res: Response, status: number, data: any) {
       code: status,
       message: 'ok',
     },
-    data: data,
+    data,
+  });
+}
+
+// error response message
+export function errorResponse(res: Response, status: number, errors: any) {
+  res.status(status).json({
+    status: {
+      code: status,
+      message: 'error occurred',
+    },
+    errors,
   });
 }

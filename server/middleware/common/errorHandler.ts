@@ -1,5 +1,6 @@
 import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 import createError from 'http-errors';
+import { errorResponse } from '../../config/response';
 
 // not found handler
 export function notFound(_req: Request, _res: Response, next: NextFunction) {
@@ -8,10 +9,8 @@ export function notFound(_req: Request, _res: Response, next: NextFunction) {
 
 // global error handler
 export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
-  res.status(err.status || 500).json({
-    status: {
-      code: err.status || 500,
-      message: err.message || 'Internal Server Error!',
-    },
+  // forward data in ./config/response.ts for errors message
+  errorResponse(res, err.status || 500, {
+    message: err.message || 'Internal Server Error!',
   });
 };
