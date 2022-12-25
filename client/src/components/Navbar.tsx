@@ -1,6 +1,9 @@
 import { Link, NavLink } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Navbar() {
+  const { isAuth, logout } = useAuth();
+
   return (
     <div className="bg-white shadow-sm">
       <div className="wrapper navbar">
@@ -45,12 +48,20 @@ export default function Navbar() {
           </ul>
         </div>
         <div className="navbar-end">
-          <NavLink className="btn bg-gray-200 btn-ghost mr-3" to="/signin">
-            Sign In
-          </NavLink>
-          <NavLink className="btn" to="/signup">
-            Sign up
-          </NavLink>
+          {isAuth ? (
+            <button className="btn bg-gray-200 btn-ghost" onClick={logout}>
+              Signout
+            </button>
+          ) : (
+            <>
+              <NavLink className="btn bg-gray-200 btn-ghost mr-3" to="/signin">
+                Sign In
+              </NavLink>
+              <NavLink className="btn" to="/signup">
+                Sign up
+              </NavLink>
+            </>
+          )}
         </div>
       </div>
     </div>

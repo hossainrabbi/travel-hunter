@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
+import createError from 'http-errors';
 import { successResponse } from '../config/response';
 import User from '../models/User';
-import createError from 'http-errors';
 
 // register auth
 export async function register(
@@ -27,7 +27,16 @@ export async function register(
     const token = newUser.generateToken(newUser._id);
 
     // forward data in ./config/response.ts for success response
-    successResponse(res, 201, { token });
+    successResponse(res, 201, {
+      token,
+      user: {
+        _id: newUser._id,
+        username: newUser.username,
+        mobile: newUser.mobile,
+        avatar: newUser.avatar,
+        role: newUser.role,
+      },
+    });
   } catch (err) {
     next(err);
   }
@@ -36,14 +45,14 @@ export async function register(
 // login auth
 export async function login(req: Request, res: Response, next: NextFunction) {
   try {
-    const { username, mobile, password } = req.body;
+    const { username, password } = req.body;
 
     const user = await User.findOne({
       $or: [
         {
           username,
         },
-        { mobile },
+        { mobile: username },
       ],
     });
 
@@ -61,7 +70,16 @@ export async function login(req: Request, res: Response, next: NextFunction) {
     const token = user.generateToken(user._id);
 
     // forward data in ./config/response.ts for success response
-    successResponse(res, 200, { token });
+    successResponse(res, 200, {
+      token,
+      user: {
+        _id: user._id,
+        username: user.username,
+        mobile: user.mobile,
+        avatar: user.avatar,
+        role: user.role,
+      },
+    });
   } catch (err) {
     next(err);
   }

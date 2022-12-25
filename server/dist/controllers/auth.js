@@ -13,9 +13,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.login = exports.register = void 0;
+const http_errors_1 = __importDefault(require("http-errors"));
 const response_1 = require("../config/response");
 const User_1 = __importDefault(require("../models/User"));
-const http_errors_1 = __importDefault(require("http-errors"));
 // register auth
 function register(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -30,7 +30,16 @@ function register(req, res, next) {
             // generate token from User models
             const token = newUser.generateToken(newUser._id);
             // forward data in ./config/response.ts for success response
-            (0, response_1.successResponse)(res, 201, { token });
+            (0, response_1.successResponse)(res, 201, {
+                token,
+                user: {
+                    _id: newUser._id,
+                    username: newUser.username,
+                    mobile: newUser.mobile,
+                    avatar: newUser.avatar,
+                    role: newUser.role,
+                },
+            });
         }
         catch (err) {
             next(err);
@@ -42,13 +51,13 @@ exports.register = register;
 function login(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const { username, mobile, password } = req.body;
+            const { username, password } = req.body;
             const user = yield User_1.default.findOne({
                 $or: [
                     {
                         username,
                     },
-                    { mobile },
+                    { mobile: username },
                 ],
             });
             if (!user) {
@@ -61,7 +70,16 @@ function login(req, res, next) {
             // generate token from User models
             const token = user.generateToken(user._id);
             // forward data in ./config/response.ts for success response
-            (0, response_1.successResponse)(res, 200, { token });
+            (0, response_1.successResponse)(res, 200, {
+                token,
+                user: {
+                    _id: user._id,
+                    username: user.username,
+                    mobile: user.mobile,
+                    avatar: user.avatar,
+                    role: user.role,
+                },
+            });
         }
         catch (err) {
             next(err);

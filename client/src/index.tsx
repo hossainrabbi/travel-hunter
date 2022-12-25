@@ -1,3 +1,4 @@
+import '@babel/polyfill';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import AuthContextProvider from './contexts/AuthContext';
